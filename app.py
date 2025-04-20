@@ -4,14 +4,24 @@
 # funcinalidades
 # inicar a aplicação
 
+from usuario import Usuario
 import customtkinter as ctk
 ctk.set_appearance_mode('dark')
 
+ 
 def validar_login():
-    user = usuarioEntry.get()
-    senha = senhaEntry.get()
 
-    if user == "Matheus" and senha == "024689":
+    usuario = Usuario(
+        user = usuarioEntry.get(),
+        senha = senhaEntry.get()
+    )
+
+    print(
+        "O valor do Usuário digitado foi: ", usuario.getUser(),
+        "E o valor da senha digitado foi: ", usuario.getSenha(),
+    )
+
+    if usuario.getUser() == "Matheus" and usuario.getSenha() == "024689":
         campoFeedBackLogin.configure(
             text="Login realizado com sucesso!",
             text_color="green"
