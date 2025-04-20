@@ -1,4 +1,4 @@
-import mysql
+import mysql # type: ignore
 from usuario import Usuario
 
 Conexao = mysql.connector.connect(
