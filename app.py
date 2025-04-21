@@ -19,12 +19,14 @@ def conexao(host, user, password, database):
 conexao = conexao('localhost', 'root', '12102021', 'aulas')
 cursor = conexao.cursor()
 
+
+# CRUD
 def validar_login():
 
     print(f"""
-        Validando Login ... 
-          Usuário digitado: {usuarioEntry.get()} 
-          Senha digitada: {senhaEntry.get()} 
+        Validando informações para Login ... 
+          Usuário digitado  
+          Senha digitada  
         """)
 
     if usuarioEntry.get() == "Matheus" and senhaEntry.get() == "024689":
@@ -34,8 +36,14 @@ def validar_login():
         )
 
         ## INSERT
-        sql = f'INSERT INTO login (usuario, senha) VALUES ("{usuarioEntry.get()}", "{senhaEntry.get()}")'
+        sql = f'''INSERT 
+                    INTO login (usuario, senha) 
+                  VALUES ("{usuarioEntry.get()}", "{senhaEntry.get()}")'''
         cursor.execute(sql)
+
+        usuarioEntry.delete(0, 'end')
+        senhaEntry.delete(0, 'end')
+
         conexao.commit()
         print(f"Usuário e Senha inseridos com sucesso!")
 
@@ -46,6 +54,12 @@ def validar_login():
             text_color="red"
         )
 
+        usuarioEntry.delete(0, 'end')
+        senhaEntry.delete(0, 'end')
+
+
+
+#### TELA ####
 app = ctk.CTk()
 app.title('Sistema de Login')
 app.geometry('300x300')
@@ -60,7 +74,8 @@ usuarioEntry.pack(pady=10)
 lblSenha = ctk.CTkLabel(app, text='Senha:')
 lblSenha.pack(pady=10)
 senhaEntry = ctk.CTkEntry(app, 
-                          placeholder_text="Digite sua senha")
+                          placeholder_text="Digite sua senha",
+                          show="*")
 senhaEntry.pack(pady=10)
 
 
@@ -74,8 +89,3 @@ campoFeedBackLogin = ctk.CTkLabel(app,
 campoFeedBackLogin.pack(pady=10)
 
 app.mainloop()
-
-
-
-
-
