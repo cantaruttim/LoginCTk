@@ -1,19 +1,3 @@
-from dados import usuario, senha, cursor
-
-## SELECT DO BANCO
-
-sqlSelect = f'''    
-                SELECT 
-                    * 
-                FROM login 
-                WHERE usuario LIKE "{usuario}%" 
-                    AND senha LIKE "{senha}%"     
-            '''
-
-cursor.execute(sqlSelect)
-resultado = cursor.fetchall()
-print(resultado)
-
 class DTOUsuario:
     """
     

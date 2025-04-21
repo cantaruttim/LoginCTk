@@ -7,6 +7,7 @@
 import customtkinter as ctk
 import mysql.connector
 from dados import *
+from DTOUsuario import DTOUsuario
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -40,24 +41,48 @@ def validar_login():
           Senha digitada  
         """)
 
+    # Usuário e Senha extraídos do banco de dados
+    usuario = usuarioEntry.get()
+    senha = senhaEntry.get()
 
+    sqlSelect = f'''    
+                    SELECT 
+                        id, usuario, senha 
+                    FROM login 
+                    WHERE usuario LIKE "{usuario}%" 
+                        AND senha LIKE "{senha}%"     
+                '''
+
+    cursor.execute(sqlSelect)
+    resultado = cursor.fetchall()
+    print("Id extraído: ", int(resultado[0][0]))
+    print("Usuário extraído: ", str(resultado[0][1]))
+    print("Senha extraído: ", str(resultado[0][2]))
+
+    # Variáveis DTO
+    idDTO = int(resultado[0][0])
+    usuarioDTO = resultado[0][1]
+    senhaDTO = resultado[0][2]
+
+    userDTO = usuarioDTO(
+        id=idDTO,
+        usuario=usuarioDTO,
+        senha=senhaDTO
+    )
 
     ### se esses valores forem iguais, então dizer que o usuário e senha existem
     ### caso contrário insere
 
     # os valores esperados para a parte do "" são os valores retirados do banco de dados
-    if usuarioEntry.get() != "" and senhaEntry.get() != "":
+    if usuarioEntry.get() == userDTO.getDTOUsuario() and senhaEntry.get() == userDTO.getDTOSenha():
         campoFeedBackLogin.configure(
             text="Login realizado com sucesso!",
             text_color="green"
         )
 
-        # Check if the user already exists
-        sqlCheck = "SELECT id FROM login WHERE usuario = %s AND senha = %s"
-        cursor.execute(sqlCheck, (usuarioEntry.get(), senhaEntry.get()))
-        result = cursor.fetchone()
+        if resultado.is_empty():
+            print(f"Usuário ou Senha não existe!")
 
-        if result is None: 
             # INSERT
             sqlInsert = "INSERT INTO login (usuario, senha) VALUES (%s, %s)"
             cursor.execute(sqlInsert, (usuarioEntry.get(), senhaEntry.get()))
@@ -67,7 +92,7 @@ def validar_login():
 
             print(f"Usuário e Senha inseridos com sucesso!")
         else:
-            print(f"Usuário e Senha já existe!")
+            print(f"Login realizado com sucesso!")
             
         conexao.commit()
 
