@@ -4,28 +4,42 @@
 # funcinalidades
 # inicar a aplicação
 
-from usuario import Usuario
 import customtkinter as ctk
+import mysql.connector
 ctk.set_appearance_mode('dark')
 
- 
+def conexao(host, user, password, database):
+    conexao = mysql.connector.connect(
+        host=host,
+        user=user,
+        password=password,
+        database=database
+    )
+    return conexao
+conexao = conexao('localhost', 'root', '12102021', 'aulas')
+cursor = conexao.cursor()
+
 def validar_login():
 
-    usuario = Usuario(
-        user = usuarioEntry.get(),
-        senha = senhaEntry.get()
-    )
+    print(f"""
+        Validando Login ... 
+          Usuário digitado: {usuarioEntry.get()} 
+          Senha digitada: {senhaEntry.get()} 
+        """)
 
-    print(
-        "O valor do Usuário digitado foi: ", usuario.getUser(),
-        "E o valor da senha digitado foi: ", usuario.getSenha(),
-    )
-
-    if usuario.getUser() == "Matheus" and usuario.getSenha() == "024689":
+    if usuarioEntry.get() == "Matheus" and senhaEntry.get() == "024689":
         campoFeedBackLogin.configure(
             text="Login realizado com sucesso!",
             text_color="green"
         )
+
+        ## INSERT
+        sql = f'INSERT INTO login (usuario, senha) VALUES ("{usuarioEntry.get()}", "{senhaEntry.get()}")'
+        cursor.execute(sql)
+        conexao.commit()
+        print(f"Usuário e Senha inseridos com sucesso!")
+
+
     else:
         campoFeedBackLogin.configure(
             text="Usuário ou Senha incorretos!",
@@ -49,6 +63,7 @@ senhaEntry = ctk.CTkEntry(app,
                           placeholder_text="Digite sua senha")
 senhaEntry.pack(pady=10)
 
+
 buttonLogin = ctk.CTkButton(app, 
                             text="Login", 
                             command=validar_login)
@@ -59,3 +74,8 @@ campoFeedBackLogin = ctk.CTkLabel(app,
 campoFeedBackLogin.pack(pady=10)
 
 app.mainloop()
+
+
+
+
+
