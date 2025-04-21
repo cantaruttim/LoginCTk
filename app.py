@@ -114,29 +114,22 @@ def validar_login():
 app = ctk.CTk()
 app.title('Sistema de Login')
 app.geometry('300x300')
-
 lblUsuario = ctk.CTkLabel(app, text='Usuário:')
 lblUsuario.pack(pady=10)
-
 usuarioEntry = ctk.CTkEntry(app, 
                             placeholder_text="Digite o seu usuário")
 usuarioEntry.pack(pady=10)
-
 lblSenha = ctk.CTkLabel(app, text='Senha:')
 lblSenha.pack(pady=10)
 senhaEntry = ctk.CTkEntry(app, 
                           placeholder_text="Digite sua senha",
                           show="*")
 senhaEntry.pack(pady=10)
-
-
 buttonLogin = ctk.CTkButton(app, 
                             text="Login", 
                             command=validar_login)
 buttonLogin.pack(pady=10)
-
 campoFeedBackLogin = ctk.CTkLabel(app, 
                                   text='')
 campoFeedBackLogin.pack(pady=10)
-
 app.mainloop()
