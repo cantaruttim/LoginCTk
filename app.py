@@ -6,6 +6,7 @@
 
 import customtkinter as ctk
 import mysql.connector
+from dados import *
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -39,23 +40,36 @@ def validar_login():
           Senha digitada  
         """)
 
-    if usuarioEntry.get() == "Matheus" and senhaEntry.get() == "024689":
+
+
+    ### se esses valores forem iguais, então dizer que o usuário e senha existem
+    ### caso contrário insere
+
+    # os valores esperados para a parte do "" são os valores retirados do banco de dados
+    if usuarioEntry.get() != "" and senhaEntry.get() != "":
         campoFeedBackLogin.configure(
             text="Login realizado com sucesso!",
             text_color="green"
         )
 
-        ## INSERT
-        sql = f'''INSERT 
-                    INTO login (usuario, senha) 
-                  VALUES ("{usuarioEntry.get()}", "{senhaEntry.get()}")'''
-        cursor.execute(sql)
+        # Check if the user already exists
+        sqlCheck = "SELECT id FROM login WHERE usuario = %s AND senha = %s"
+        cursor.execute(sqlCheck, (usuarioEntry.get(), senhaEntry.get()))
+        result = cursor.fetchone()
 
-        usuarioEntry.delete(0, 'end')
-        senhaEntry.delete(0, 'end')
+        if result is None: 
+            # INSERT
+            sqlInsert = "INSERT INTO login (usuario, senha) VALUES (%s, %s)"
+            cursor.execute(sqlInsert, (usuarioEntry.get(), senhaEntry.get()))
 
+            usuarioEntry.delete(0, 'end')
+            senhaEntry.delete(0, 'end')
+
+            print(f"Usuário e Senha inseridos com sucesso!")
+        else:
+            print(f"Usuário e Senha já existe!")
+            
         conexao.commit()
-        print(f"Usuário e Senha inseridos com sucesso!")
 
 
     else:
@@ -66,6 +80,8 @@ def validar_login():
 
         usuarioEntry.delete(0, 'end')
         senhaEntry.delete(0, 'end')
+
+        print(f"Usuário ou Senha incorreto!")
 
 
 
