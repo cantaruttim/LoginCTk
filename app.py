@@ -64,7 +64,7 @@ def validar_login():
     usuarioDTO = resultado[0][1]
     senhaDTO = resultado[0][2]
 
-    userDTO = usuarioDTO(
+    userDTO = DTOUsuario(
         id=idDTO,
         usuario=usuarioDTO,
         senha=senhaDTO
@@ -74,7 +74,7 @@ def validar_login():
     ### caso contrário insere
 
     # os valores esperados para a parte do "" são os valores retirados do banco de dados
-    if usuarioEntry.get() == userDTO.getDTOUsuario() and senhaEntry.get() == userDTO.getDTOSenha():
+    if (usuarioEntry.get() == userDTO.getDTOUsuario()) and (senhaEntry.get() == userDTO.getDTOSenha()):
         campoFeedBackLogin.configure(
             text="Login realizado com sucesso!",
             text_color="green"
