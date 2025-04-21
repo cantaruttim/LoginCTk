@@ -6,6 +6,15 @@
 
 import customtkinter as ctk
 import mysql.connector
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+hostMysql = os.getenv('HOST_MYSQL')
+userMysql = os.getenv('USER_MYSQL')
+password = os.getenv('SENHA_MYSQL')
+dbMysql = os.getenv('DB_MYSQL')
+
 ctk.set_appearance_mode('dark')
 
 def conexao(host, user, password, database):
@@ -16,7 +25,8 @@ def conexao(host, user, password, database):
         database=database
     )
     return conexao
-conexao = conexao('localhost', 'root', '12102021', 'aulas')
+
+conexao = conexao(hostMysql, userMysql, password, dbMysql)
 cursor = conexao.cursor()
 
 
