@@ -8,6 +8,10 @@ class DTOUsuario:
         self.id = id
         self.usuario = usuario
         self.senha = senha
+    
+    def DTOUsuario(self, usuario, senha):
+        self.usuario = usuario
+        self.senha = senha
 
     def getDTOId(self):
         return self.id

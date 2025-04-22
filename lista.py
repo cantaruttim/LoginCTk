@@ -1,6 +1,6 @@
 class List:
 
-    def __init__(self):
+    def __init__(self, lista):
         self.itens = []
 
     def tamanho(self):

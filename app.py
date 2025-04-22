@@ -7,7 +7,6 @@
 import customtkinter as ctk
 import mysql.connector
 from DTOUsuario import DTOUsuario
-from lista import List
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -32,7 +31,55 @@ conexao = conexao(hostMysql, userMysql, password, dbMysql)
 cursor = conexao.cursor()
 
 
-# CRUD
+# CREATE
+def cadastrar_usuario():
+    
+    print(f"""
+        Cadastrando Usuário ...
+          """)
+    
+    # Usuário e Senha extraídos do banco de dados
+    usuario = usuarioEntry.get()
+    senha = senhaEntry.get()
+
+    # sqlSelect = f'''    
+    #                 SELECT 
+    #                     usuario, senha 
+    #                 FROM login 
+    #                 WHERE usuario LIKE "{usuario}%" 
+    #                     AND senha LIKE "{senha}%"     
+    #             '''
+
+    # cursor.execute(sqlSelect)
+    # resultado = cursor.fetchall()
+
+    # # Variáveis DTO
+    # if not resultado:
+    #     print("Novo Usuário")
+    #     usuarioDTO = resultado[0][1]
+    #     senhaDTO = resultado[0][2]
+
+    #     userDTO = DTOUsuario(
+    #         usuario=usuarioDTO,
+    #         senha=senhaDTO
+    #     )
+    campoFeedCadastro.configure(
+        text="Usuário cadastrado com sucesso!",
+        text_color="green"
+    )
+
+    # INSERT
+    sqlInsert = "INSERT INTO login (usuario, senha) VALUES (%s, %s)"
+    cursor.execute(sqlInsert, (usuario, senha))
+
+    conexao.commit()
+    
+    usuarioEntry.delete(0, 'end')
+    senhaEntry.delete(0, 'end')
+
+
+    
+# READ
 def validar_login():
 
     print(f"""
@@ -55,12 +102,9 @@ def validar_login():
 
     cursor.execute(sqlSelect)
     resultado = cursor.fetchall()
-    # print("Id extraído: ", int(resultado[0][0]))
-    # print("Usuário extraído: ", str(resultado[0][1]))
-    # print("Senha extraído: ", str(resultado[0][2]))
 
     # Variáveis DTO
-    if resultado == []:
+    if not resultado:
         print("Novo Usuário")
     else:
         idDTO = int(resultado[0][0])
@@ -82,26 +126,7 @@ def validar_login():
             text="Login realizado com sucesso!",
             text_color="green"
         )
-
-        # verificando se a lista está vazia e se há retornos sobre
-        resultado = List(resultado)
-        if resultado.esta_vazia():
-            print(f"Sem retorno!")
-
-            # INSERT
-            sqlInsert = "INSERT INTO login (usuario, senha) VALUES (%s, %s)"
-            cursor.execute(sqlInsert, (usuarioEntry.get(), senhaEntry.get()))
-
-            usuarioEntry.delete(0, 'end')
-            senhaEntry.delete(0, 'end')
-
-            print(f"Usuário e Senha inseridos com sucesso!")
-        else:
-            print(f"Login realizado com sucesso!")
-            
         conexao.commit()
-
-
     else:
         campoFeedBackLogin.configure(
             text="Usuário ou Senha incorretos!",
@@ -110,7 +135,6 @@ def validar_login():
 
         usuarioEntry.delete(0, 'end')
         senhaEntry.delete(0, 'end')
-
         print(f"Usuário ou Senha incorreto!")
 
 
@@ -134,7 +158,19 @@ buttonLogin = ctk.CTkButton(app,
                             text="Login", 
                             command=validar_login)
 buttonLogin.pack(pady=10)
+
+buttonCadastro = ctk.CTkButton(app, 
+                            text="Cadastrar",
+                            hover=True,
+                            command=cadastrar_usuario)
+buttonCadastro.pack(pady=10)
+
 campoFeedBackLogin = ctk.CTkLabel(app, 
                                   text='')
 campoFeedBackLogin.pack(pady=10)
+
+campoFeedCadastro = ctk.CTkLabel(app, 
+                                  text='')
+campoFeedCadastro.pack(pady=10)
+
 app.mainloop()
