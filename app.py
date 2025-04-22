@@ -42,27 +42,6 @@ def cadastrar_usuario():
     usuario = usuarioEntry.get()
     senha = senhaEntry.get()
 
-    # sqlSelect = f'''    
-    #                 SELECT 
-    #                     usuario, senha 
-    #                 FROM login 
-    #                 WHERE usuario LIKE "{usuario}%" 
-    #                     AND senha LIKE "{senha}%"     
-    #             '''
-
-    # cursor.execute(sqlSelect)
-    # resultado = cursor.fetchall()
-
-    # # Variáveis DTO
-    # if not resultado:
-    #     print("Novo Usuário")
-    #     usuarioDTO = resultado[0][1]
-    #     senhaDTO = resultado[0][2]
-
-    #     userDTO = DTOUsuario(
-    #         usuario=usuarioDTO,
-    #         senha=senhaDTO
-    #     )
     campoFeedCadastro.configure(
         text="Usuário cadastrado com sucesso!",
         text_color="green"
@@ -73,12 +52,11 @@ def cadastrar_usuario():
     cursor.execute(sqlInsert, (usuario, senha))
 
     conexao.commit()
-    
+
     usuarioEntry.delete(0, 'end')
     senhaEntry.delete(0, 'end')
 
 
-    
 # READ
 def validar_login():
 
@@ -117,10 +95,6 @@ def validar_login():
             senha=senhaDTO
         )
 
-    ### se esses valores forem iguais, então dizer que o usuário e senha existem
-    ### caso contrário insere
-
-    # os valores esperados para a parte do "" são os valores retirados do banco de dados
     if (usuarioEntry.get() == userDTO.getDTOUsuario()) and (senhaEntry.get() == userDTO.getDTOSenha()):
         campoFeedBackLogin.configure(
             text="Login realizado com sucesso!",
@@ -138,7 +112,27 @@ def validar_login():
         print(f"Usuário ou Senha incorreto!")
 
 
+    # READ
+    sqlSelect = f'''
+        SELECT 
+            id, usuario, senha 
+        FROM login 
+        WHERE usuario LIKE "{usuario}%"
+            AND senha LIKE "{senha}%"
+    '''
 
+    cursor.execute(sqlSelect)
+    resultado = cursor.fetchall()
+
+    print(f""" Dados encontrados no Banco:
+        Id :  {resultado[0][0]}
+        Usuário :  {resultado[0][1]}
+        Senha :  {resultado[0][2]}
+    """)
+
+    usuarioEntry.delete(0, 'end')
+    senhaEntry.delete(0, 'end')
+    
 #### TELA ####
 app = ctk.CTk()
 app.title('Sistema de Login')
