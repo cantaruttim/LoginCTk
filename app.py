@@ -6,8 +6,8 @@
 
 import customtkinter as ctk
 import mysql.connector
-from dados import *
 from DTOUsuario import DTOUsuario
+from lista import List
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -55,20 +55,23 @@ def validar_login():
 
     cursor.execute(sqlSelect)
     resultado = cursor.fetchall()
-    print("Id extraído: ", int(resultado[0][0]))
-    print("Usuário extraído: ", str(resultado[0][1]))
-    print("Senha extraído: ", str(resultado[0][2]))
+    # print("Id extraído: ", int(resultado[0][0]))
+    # print("Usuário extraído: ", str(resultado[0][1]))
+    # print("Senha extraído: ", str(resultado[0][2]))
 
     # Variáveis DTO
-    idDTO = int(resultado[0][0])
-    usuarioDTO = resultado[0][1]
-    senhaDTO = resultado[0][2]
+    if resultado == []:
+        print("Novo Usuário")
+    else:
+        idDTO = int(resultado[0][0])
+        usuarioDTO = resultado[0][1]
+        senhaDTO = resultado[0][2]
 
-    userDTO = DTOUsuario(
-        id=idDTO,
-        usuario=usuarioDTO,
-        senha=senhaDTO
-    )
+        userDTO = DTOUsuario(
+            id=idDTO,
+            usuario=usuarioDTO,
+            senha=senhaDTO
+        )
 
     ### se esses valores forem iguais, então dizer que o usuário e senha existem
     ### caso contrário insere
@@ -80,8 +83,10 @@ def validar_login():
             text_color="green"
         )
 
-        if resultado.is_empty():
-            print(f"Usuário ou Senha não existe!")
+        # verificando se a lista está vazia e se há retornos sobre
+        resultado = List(resultado)
+        if resultado.esta_vazia():
+            print(f"Sem retorno!")
 
             # INSERT
             sqlInsert = "INSERT INTO login (usuario, senha) VALUES (%s, %s)"
